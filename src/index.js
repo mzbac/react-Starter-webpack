@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { AppBar } from 'react-toolbox';
+import App from './App';
 
 ReactDOM.render(
-  <AppBar />,
+  <App />,
   document.getElementById('container')
 );
