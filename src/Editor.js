@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { EditorState, convertToRaw, DefaultDraftBlockRenderMap } from 'draft-js';
+import { EditorState, convertToRaw, DefaultDraftBlockRenderMap, Entity } from 'draft-js';
 import Editor from 'draft-js-plugins-editor';
 import createDndPlugin from 'draft-js-dnd-plugin';
 import createToolbarPlugin from 'draft-js-toolbar-plugin';
@@ -94,7 +94,13 @@ blockRendererFn(contentBlock)  {
   if (type === '0') {
     return {
       component: (props) => {
-
+        //fetch data
+        let data = Entity.get(props.block.getEntityAt(0)).getData();
+        //set new props on data
+        data.netTest=111;
+        debugger;
+        //data store in block data
+        const data1 = Entity.get(props.block.getEntityAt(0)).getData();
         return <div>testing</div>
       }
     }
