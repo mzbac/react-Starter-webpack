@@ -4,6 +4,7 @@ import Editor from 'draft-js-plugins-editor';
 import createDndPlugin from 'draft-js-dnd-plugin';
 import createToolbarPlugin from 'draft-js-toolbar-plugin';
 import {Map} from 'immutable';
+import DraftEditorBlock from 'draft-js/lib/DraftEditorBlock.react';
 import  style from './Editor.css';
 
 
@@ -67,7 +68,7 @@ class KeyPathEditor extends Component {
         element: 'div',
       },
     };
-debugger;
+
     return Map(newObj);
   }
   onChange(editorState) {
@@ -90,7 +91,14 @@ blockRendererFn(contentBlock)  {
 
   const { blockTypes } = this.props;
   const type = contentBlock.getType();
+  if (type === '0') {
+    return {
+      component: (props) => {
 
+        return <div>testing</div>
+      }
+    }
+  }
   return undefined;
 }
 
@@ -104,6 +112,7 @@ blockRendererFn(contentBlock)  {
           editorState={editorState}
           plugins={this.plugins}
           onChange={this.onChange}
+          blockRenderMap={this.blockRenderMap}
           blockRendererFn={this.blockRendererFn}
           ref="editor"
         />
