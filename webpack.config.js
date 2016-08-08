@@ -1,3 +1,7 @@
+const path = require('path');
+const cssnext = require('postcss-cssnext');
+const autoprefixer = require('autoprefixer');
+
 module.exports = {
   entry: [
     './src/index.js',
@@ -9,14 +13,19 @@ module.exports = {
   },
   devtool: 'source-map',
   module: {
-    loaders: [{
-      exclude: /node_modules/,
-      loader: 'babel',
-    }],
+    loaders: [
+      {
+        test: /(\.scss|\.css)$/,
+        loader: 'style!css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss!sass',
+        include: path.resolve(__dirname, '../')
+      },
+      {
+        exclude: /node_modules/,
+        loader: 'babel',
+      }
+    ],
   },
-  plugins: [
-
-  ],
+  plugins: [],
   resolve: {
     extensions: ['', '.js', '.jsx'],
   },
@@ -24,4 +33,5 @@ module.exports = {
     historyApiFallback: true,
     contentBase: './',
   },
+  postcss: [autoprefixer],
 };
