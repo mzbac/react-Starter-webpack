@@ -8,6 +8,9 @@
     width: 22rem;
     flex-direction: column;
     min-height: 100%;
+    border-right: #e0e0e0;;
+    border-width: 2px;
+    border-style: none solid none none;
 }
 
 .componentList {

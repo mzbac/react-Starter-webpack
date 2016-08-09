@@ -2,8 +2,9 @@ import React, { Component, PropTypes } from 'react';
 import { EditorState, convertToRaw, DefaultDraftBlockRenderMap, Entity } from 'draft-js';
 import Editor from 'draft-js-plugins-editor';
 import createDndPlugin from 'draft-js-dnd-plugin';
+import createCleanupEmptyPlugin from 'draft-js-cleanup-empty-plugin';
 import createToolbarPlugin from 'draft-js-toolbar-plugin';
-import {Map} from 'immutable';
+import { Map } from 'immutable';
 import DraftEditorBlock from 'draft-js/lib/DraftEditorBlock.react';
 import  style from './Editor.css';
 
@@ -23,18 +24,21 @@ class KeyPathEditor extends Component {
           allowDrop: true,
           handleDefaultData: (blockType) => {
             console.log(blockType);
-            return { test:'test'};
+            return { test: 'test' };
           }, //insert block data
         }
       );
+    const cleanupPlugin = createCleanupEmptyPlugin({
+      types: [...Array(7).keys()].map( (item) => `${item}`)
+    });
     this
-      .plugins = [dndPlugin];
+      .plugins = [dndPlugin,cleanupPlugin];
     this.blockRenderMap = DefaultDraftBlockRenderMap.merge(
       this.customBlockRendering(props)
     );
     this.onChange = this.onChange.bind(this);
     this.focus = this.focus.bind(this);
-    this.blockRendererFn =this.blockRendererFn.bind(this);
+    this.blockRendererFn = this.blockRendererFn.bind(this);
   }
 
 // shouldComponentUpdate(props, state) {
@@ -61,21 +65,41 @@ class KeyPathEditor extends Component {
 //   }
 //   return false;
 // }
-  customBlockRendering (props)  {
+  customBlockRendering(props) {
     const { blockTypes } = props;
     var newObj = {
       '0': {
+        element: 'div',
+      },
+      '1': {
+        element: 'div',
+      },
+      '2': {
+        element: 'div',
+      },
+      '3': {
+        element: 'div',
+      },
+      '4': {
+        element: 'div',
+      },
+      '5': {
+        element: 'div',
+      },
+      '6': {
+        element: 'div',
+      },
+      '7': {
         element: 'div',
       },
     };
 
     return Map(newObj);
   }
+
   onChange(editorState) {
     // const force = false;
     // if (this.suppress && !force) return;
-    console.log(editorState);
-    console.log(convertToRaw(editorState.getCurrentContent()));
     this.setState({ editorState });
     // if (this.props.onChange) {
     //   this.__raw = convertToRaw(editorState.getCurrentContent());
@@ -87,26 +111,129 @@ class KeyPathEditor extends Component {
     this.refs.editor.focus();
   }
 
-blockRendererFn(contentBlock)  {
+  blockRendererFn(contentBlock) {
 
-  const { blockTypes } = this.props;
-  const type = contentBlock.getType();
-  if (type === '0') {
-    return {
-      component: (props) => {
-        //fetch data
-        let data = Entity.get(props.block.getEntityAt(0)).getData();
-        //set new props on data
-        data.netTest=111;
-        debugger;
-        //data store in block data
-        const data1 = Entity.get(props.block.getEntityAt(0)).getData();
-        return <div>testing</div>
+    const { blockTypes } = this.props;
+    const type = contentBlock.getType();
+    if (type === '0') {
+      return {
+        component: (props) => {
+          return <ol>
+            <li>Coffee</li>
+            <li>Tea</li>
+            <li>Milk</li>
+          </ol>
+        }
       }
     }
+
+    if (type === '1') {
+      return {
+        component: (props) => {
+          //fetch data
+          let data = Entity.get(props.block.getEntityAt(0)).getData();
+          //set new props on data
+          data.netTest = 111;
+          //data store in block data
+          const data1 = Entity.get(props.block.getEntityAt(0)).getData();
+          return <div>custom component {props.block.getType()}</div>
+        }
+      }
+    }
+
+
+    if (type === '2') {
+      return {
+        component: (props) => {
+          //fetch data
+          let data = Entity.get(props.block.getEntityAt(0)).getData();
+          //set new props on data
+          data.netTest = 111;
+          //data store in block data
+          const data1 = Entity.get(props.block.getEntityAt(0)).getData();
+          return <div>custom component {props.block.getType()}</div>
+        }
+      }
+    }
+
+
+    if (type === '3') {
+      return {
+        component: (props) => {
+          //fetch data
+          let data = Entity.get(props.block.getEntityAt(0)).getData();
+          //set new props on data
+          data.netTest = 111;
+          //data store in block data
+          const data1 = Entity.get(props.block.getEntityAt(0)).getData();
+          return <div>custom component {props.block.getType()}</div>
+        }
+      }
+    }
+
+
+    if (type === '4') {
+      return {
+        component: (props) => {
+          //fetch data
+          let data = Entity.get(props.block.getEntityAt(0)).getData();
+          //set new props on data
+          data.netTest = 111;
+          //data store in block data
+          const data1 = Entity.get(props.block.getEntityAt(0)).getData();
+          return <div>custom component {props.block.getType()}</div>
+        }
+      }
+    }
+
+
+
+    if (type === '5') {
+      return {
+        component: (props) => {
+          //fetch data
+          let data = Entity.get(props.block.getEntityAt(0)).getData();
+          //set new props on data
+          data.netTest = 111;
+          //data store in block data
+          const data1 = Entity.get(props.block.getEntityAt(0)).getData();
+          return <div>custom component {props.block.getType()}</div>
+        }
+      }
+    }
+
+
+
+    if (type === '6') {
+      return {
+        component: (props) => {
+          //fetch data
+          let data = Entity.get(props.block.getEntityAt(0)).getData();
+          //set new props on data
+          data.netTest = 111;
+          //data store in block data
+          const data1 = Entity.get(props.block.getEntityAt(0)).getData();
+          return <div>custom component {props.block.getType()}</div>
+        }
+      }
+    }
+
+
+    if (type === '7') {
+      return {
+        component: (props) => {
+          //fetch data
+          let data = Entity.get(props.block.getEntityAt(0)).getData();
+          //set new props on data
+          data.netTest = 111;
+          //data store in block data
+          const data1 = Entity.get(props.block.getEntityAt(0)).getData();
+          return <div>custom component {props.block.getType()}</div>
+        }
+      }
+    }
+    return undefined;
   }
-  return undefined;
-}
 
   render() {
     const { editorState } = this.state;
