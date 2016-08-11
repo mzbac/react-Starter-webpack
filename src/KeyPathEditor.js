@@ -1,13 +1,16 @@
 import React, { Component, PropTypes } from 'react';
-import { EditorState, convertToRaw, DefaultDraftBlockRenderMap, Entity } from 'draft-js';
+import { EditorState, convertToRaw, DefaultDraftBlockRenderMap, Entity, RichUtils } from 'draft-js';
 import Editor from 'draft-js-plugins-editor';
 import createDndPlugin from 'draft-js-dnd-plugin';
 import createCleanupEmptyPlugin from 'draft-js-cleanup-empty-plugin';
-import createToolbarPlugin from 'draft-js-toolbar-plugin';
+import createEntityPropsPlugin from 'draft-js-entity-props-plugin';
+import createToolbarPlugin from './draft-js-toolbar-plugin/src';
 import { Map } from 'immutable';
+import Dialog from 'react-toolbox/lib/dialog';
 import DraftEditorBlock from 'draft-js/lib/DraftEditorBlock.react';
 import  style from './Editor.css';
-
+import toolBarLinkAction from './toolBarLinkAction';
+import Input from 'react-toolbox/lib/input';
 
 class KeyPathEditor extends Component {
   constructor(props) {
@@ -17,6 +20,8 @@ class KeyPathEditor extends Component {
         ? EditorState.push(EditorState.createEmpty(), convertFromRaw(props.value))
         : EditorState.createEmpty(),
       draggingOver: false,
+      dialogActive: false,
+      dialogUrl: ''
     };
     const
       dndPlugin = createDndPlugin(
@@ -29,10 +34,116 @@ class KeyPathEditor extends Component {
         }
       );
     const cleanupPlugin = createCleanupEmptyPlugin({
-      types: [...Array(7).keys()].map( (item) => `${item}`)
+      types: [...Array(7).keys()].map((item) => `${item}`)
     });
     this
-      .plugins = [dndPlugin,cleanupPlugin];
+      .plugins = [dndPlugin, cleanupPlugin, createToolbarPlugin({
+      theme: style, inlineStyles: [{
+        label: 'Bold',
+        button: <b>B</b>,
+        style: 'BOLD'
+      },
+        { label: 'Italic', button: <i>I</i>, style: 'ITALIC' },
+      ],
+      clearTextActions: true,
+      textActions: [
+        toolBarLinkAction.CreateLinkAction(() => {
+          return new Promise((resolve, reject) => {
+            this.refs.editor.blur();
+            this.setState({ dialogActive: !this.state.dialogActive });
+            this.handleDalogSave = () => {
+              resolve(this.state.dialogUrl);
+              this.setState({ dialogActive: !this.state.dialogActive });
+            }
+          });
+        }),
+        {
+          button: <span>H1</span>,
+          label: 'h1',
+          active: (block, editorState) => block.get('type') === 'header-one',
+          toggle: (block, action, editorState, setEditorState) => {
+            debugger;
+            setEditorState(RichUtils.toggleBlockType(
+              editorState,
+              'header-one'
+            ))
+          },
+        },
+        {
+          button: <span>H2</span>,
+          label: 'h2',
+          active: (block, editorState) => block.get('type') === 'header-two',
+          toggle: (block, action, editorState, setEditorState) => setEditorState(RichUtils.toggleBlockType(
+            editorState,
+            'header-two'
+          )),
+        },
+        {
+          button: <span>H3</span>,
+          label: 'h3',
+          active: (block, editorState) => block.get('type') === 'header-three',
+          toggle: (block, action, editorState, setEditorState) => setEditorState(RichUtils.toggleBlockType(
+            editorState,
+            'header-three'
+          )),
+        },
+        {
+          button: <span>H4</span>,
+          label: 'h4',
+          active: (block, editorState) => block.get('type') === 'header-four',
+          toggle: (block, action, editorState, setEditorState) => setEditorState(RichUtils.toggleBlockType(
+            editorState,
+            'header-four'
+          )),
+        },
+        {
+          button: <span>H5</span>,
+          label: 'h5',
+          active: (block, editorState) => block.get('type') === 'header-five',
+          toggle: (block, action, editorState, setEditorState) => setEditorState(RichUtils.toggleBlockType(
+            editorState,
+            'header-five'
+          )),
+        },
+        {
+          button: <span>C</span>,
+          label: 'Code Block',
+          active: (block, editorState) => block.get('type') === 'code-block',
+          toggle: (block, action, editorState, setEditorState) => setEditorState(RichUtils.toggleBlockType(
+            editorState,
+            'code-block'
+          )),
+        },
+        {
+          button: <span>UL</span>,
+          label: 'Unordered List',
+          active: (block, editorState) => block.get('type') === 'unordered-list-item',
+          toggle: (block, action, editorState, setEditorState) => setEditorState(RichUtils.toggleBlockType(
+            editorState,
+            'unordered-list-item'
+          )),
+        },
+        {
+          button: <span>OL</span>,
+          label: 'Ordered List',
+          active: (block, editorState) => block.get('type') === 'ordered-list-item',
+          toggle: (block, action, editorState, setEditorState) => setEditorState(RichUtils.toggleBlockType(
+            editorState,
+            'ordered-list-item'
+          )),
+        },
+        {
+          button: <span>Q</span>,
+          label: 'blockquote',
+          active: (block, editorState) => block.get('type') === 'blockquote',
+          toggle: (block, action, editorState, setEditorState) => setEditorState(RichUtils.toggleBlockType(
+            editorState,
+            'blockquote'
+          )),
+        },
+      ]
+    }), createEntityPropsPlugin({})]
+    ;
     this.blockRenderMap = DefaultDraftBlockRenderMap.merge(
       this.customBlockRendering(props)
     );
@@ -98,6 +209,17 @@ class KeyPathEditor extends Component {
   }
 
   onChange(editorState) {
+    const selection = editorState.getSelection();
+
+    if (selection) {
+      console.log(editorState
+        .getCurrentContent()
+        .getBlockForKey(selection.getStartKey())
+        .getType());
+      const start = selection.getStartOffset();
+      const end = selection.getEndOffset();
+      console.log(`start ${start} end ${end}`);
+    }
     // const force = false;
     // if (this.suppress && !force) return;
     this.setState({ editorState });
@@ -115,6 +237,7 @@ class KeyPathEditor extends Component {
 
     const { blockTypes } = this.props;
     const type = contentBlock.getType();
+
     if (type === '0') {
       return {
         component: (props) => {
@@ -187,7 +310,6 @@ class KeyPathEditor extends Component {
     }
 
 
-
     if (type === '5') {
       return {
         component: (props) => {
@@ -201,7 +323,6 @@ class KeyPathEditor extends Component {
         }
       }
     }
-
 
 
     if (type === '6') {
@@ -235,11 +356,32 @@ class KeyPathEditor extends Component {
     return undefined;
   }
 
+  handleDalogToggle = () => {
+    this.setState({ dialogActive: !this.state.dialogActive });
+   }
+  handleChange = (name, value) => {
+    this.setState({...this.state, [name]: value});
+  };
+
   render() {
     const { editorState } = this.state;
     const { readOnly } = this.props;
+
+    const actions = [
+      { label: "Cancel", onClick: this.handleDalogToggle },
+      { label: "Save", onClick: this.handleDalogSave }
+    ];
     return (
       <div className={style.container} onClick={this.focus}>
+        <Dialog
+          actions={actions}
+          active={this.state.dialogActive}
+          onEscKeyDown={this.handleDalogToggle}
+          onOverlayClick={this.handleDalogToggle}
+          title='Please enter URL'
+        >
+          <Input type='text' label='URL' name='url' value={this.state.dialogUrl} onChange={this.handleChange.bind(this, 'dialogUrl')} />
+        </Dialog>
         <Editor
           readOnly={readOnly}
           editorState={editorState}

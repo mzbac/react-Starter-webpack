@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import Header from './Header';
 import Aside from './Aside';
-import  Editor from './Editor';
+import  KeyPathEditor from './KeyPathEditor';
 
 class App extends Component {
 
@@ -10,7 +10,7 @@ class App extends Component {
       <div>
         <Header />
         <Aside />
-        <Editor />
+        <KeyPathEditor />
       </div>
     );
   }

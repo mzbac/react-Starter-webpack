@@ -17,7 +17,7 @@ module.exports = {
       {
         test: /(\.scss|\.css)$/,
         loader: 'style!css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss!sass',
-        include: path.resolve(__dirname, '../')
+
       },
       {
         test: /(\.js|\.jsx)$/,
