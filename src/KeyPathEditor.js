@@ -11,6 +11,8 @@ import DraftEditorBlock from 'draft-js/lib/DraftEditorBlock.react';
 import  style from './Editor.css';
 import toolBarLinkAction from './toolBarLinkAction';
 import Input from 'react-toolbox/lib/input';
+import TestComponent from './CustomComponent';
+import { Button, IconButton } from 'react-toolbox/lib/button';
 
 class KeyPathEditor extends Component {
   constructor(props) {
@@ -21,7 +23,8 @@ class KeyPathEditor extends Component {
         : EditorState.createEmpty(),
       draggingOver: false,
       dialogActive: false,
-      dialogUrl: ''
+      dialogUrl: '',
+      readOnly: false,
     };
     const
       dndPlugin = createDndPlugin(
@@ -62,7 +65,6 @@ class KeyPathEditor extends Component {
           label: 'h1',
           active: (block, editorState) => block.get('type') === 'header-one',
           toggle: (block, action, editorState, setEditorState) => {
-            debugger;
             setEditorState(RichUtils.toggleBlockType(
               editorState,
               'header-one'
@@ -153,6 +155,7 @@ class KeyPathEditor extends Component {
   }
 
 // shouldComponentUpdate(props, state) {
+//   debugger;
 //   if (this.suppress) return false;
 //   if (this.props.value !== props.value && props.value !== this.__raw) {
 //     this.__raw = props.value;
@@ -240,13 +243,7 @@ class KeyPathEditor extends Component {
 
     if (type === '0') {
       return {
-        component: (props) => {
-          return <ol>
-            <li>Coffee</li>
-            <li>Tea</li>
-            <li>Milk</li>
-          </ol>
-        }
+        component: TestComponent
       }
     }
 
@@ -358,21 +355,26 @@ class KeyPathEditor extends Component {
 
   handleDalogToggle = () => {
     this.setState({ dialogActive: !this.state.dialogActive });
-   }
+  }
   handleChange = (name, value) => {
-    this.setState({...this.state, [name]: value});
+    this.setState({ ...this.state, [name]: value });
   };
 
   render() {
-    const { editorState } = this.state;
-    const { readOnly } = this.props;
+    const { editorState, readOnly } = this.state;
 
     const actions = [
       { label: "Cancel", onClick: this.handleDalogToggle },
       { label: "Save", onClick: this.handleDalogSave }
     ];
+
     return (
       <div className={style.container} onClick={this.focus}>
+        <Button style={{ marginLeft: '2rem' }} label={readOnly ? 'enable editing' : 'disable editing'} flat primary
+                onClick={ () => {
+                  this.setState({ readOnly: !this.state.readOnly });
+                }
+                }/>
         <Dialog
           actions={actions}
           active={this.state.dialogActive}
@@ -380,7 +382,8 @@ class KeyPathEditor extends Component {
           onOverlayClick={this.handleDalogToggle}
           title='Please enter URL'
         >
-          <Input type='text' label='URL' name='url' value={this.state.dialogUrl} onChange={this.handleChange.bind(this, 'dialogUrl')} />
+          <Input type='text' label='URL' name='url' value={this.state.dialogUrl}
+                 onChange={this.handleChange.bind(this, 'dialogUrl')}/>
         </Dialog>
         <Editor
           readOnly={readOnly}
