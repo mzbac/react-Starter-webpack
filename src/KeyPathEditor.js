@@ -1,10 +1,13 @@
 import React, { Component, PropTypes } from 'react';
 import { EditorState, convertToRaw, DefaultDraftBlockRenderMap, Entity, RichUtils } from 'draft-js';
 import Editor from 'draft-js-plugins-editor';
-import createDndPlugin from 'draft-js-dnd-plugin';
 import createCleanupEmptyPlugin from 'draft-js-cleanup-empty-plugin';
 import createEntityPropsPlugin from 'draft-js-entity-props-plugin';
-import createToolbarPlugin from './draft-js-toolbar-plugin/src';
+import createFocusPlugin, { FocusDecorator } from 'draft-js-focus-plugin';
+import createDndPlugin, { DraggableDecorator } from 'draft-js-dnd-plugin';
+import createToolbarPlugin, { ToolbarDecorator } from './draft-js-toolbar-plugin/src';
+
+
 import { Map } from 'immutable';
 import Dialog from 'react-toolbox/lib/dialog';
 import DraftEditorBlock from 'draft-js/lib/DraftEditorBlock.react';
@@ -12,7 +15,11 @@ import  style from './Editor.css';
 import toolBarLinkAction from './toolBarLinkAction';
 import Input from 'react-toolbox/lib/input';
 import TestComponent from './CustomComponent';
+import ConfigDecorator from  './ConfigDecorator';
 import { Button, IconButton } from 'react-toolbox/lib/button';
+// Styles
+import 'draft-js-focus-plugin/lib/plugin.css';
+import 'draft-js-toolbar-plugin/lib/plugin.css';
 
 class KeyPathEditor extends Component {
   constructor(props) {
@@ -32,7 +39,7 @@ class KeyPathEditor extends Component {
           allowDrop: true,
           handleDefaultData: (blockType) => {
             console.log(blockType);
-            return { test: 'test' };
+            return { config: {} };
           }, //insert block data
         }
       );
@@ -41,7 +48,8 @@ class KeyPathEditor extends Component {
     });
     this
       .plugins = [dndPlugin, cleanupPlugin, createToolbarPlugin({
-      theme: style, inlineStyles: [{
+      theme: style,
+      inlineStyles: [{
         label: 'Bold',
         button: <b>B</b>,
         style: 'BOLD'
@@ -144,7 +152,10 @@ class KeyPathEditor extends Component {
           )),
         },
       ]
-    }), createEntityPropsPlugin({})]
+    }),
+      createEntityPropsPlugin({}),
+      createFocusPlugin({}),
+    ]
     ;
     this.blockRenderMap = DefaultDraftBlockRenderMap.merge(
       this.customBlockRendering(props)
@@ -243,7 +254,16 @@ class KeyPathEditor extends Component {
 
     if (type === '0') {
       return {
-        component: TestComponent
+        component: DraggableDecorator(
+          FocusDecorator(
+            ConfigDecorator({})(
+              ToolbarDecorator({theme: style})(
+                TestComponent
+              )
+            )
+          )
+        )
+
       }
     }
 

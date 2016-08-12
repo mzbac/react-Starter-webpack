@@ -38,18 +38,19 @@ export default ({ theme }) => WrappedComponent => class ConfigDecorator extends 
     // Compose actions for the toolbar
     const actions = [
       {
-        active: this.config,
+        active: false,
         button: <span>cfg</span>,
         toggle: () => this.config(),
-        label: 'Config Component',
+        label: 'config',
       },
     ];
 
     // Get the wrapped component and pass alignment props
     return (
+
       <WrappedComponent
         {...this.props}
-        actions={[this.props.actions,...actions]}
+        actions={this.props.actions?[this.props.actions,...actions]:actions}
       />
     );
   }
