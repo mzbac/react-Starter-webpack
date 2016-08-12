@@ -14,7 +14,7 @@
 
 'use strict';
 
-import TeXEditorExample from './components/TeXEditorExample';
+import TeXEditorExample from './components/TestEditor';
 import React from 'react';
 import ReactDOM from 'react-dom';
 

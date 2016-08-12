@@ -1,29 +1,14 @@
-/**
- * Copyright (c) 2013-present, Facebook, Inc. All rights reserved.
- *
- * This file provided by Facebook is for non-commercial testing and evaluation
- * purposes only. Facebook reserves all rights not expressly granted.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
- * FACEBOOK BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
-
-'use strict';
 
 import Draft from 'draft-js';
-import {Map} from 'immutable';
+import { Map } from 'immutable';
 import React from 'react';
 
 import TeXBlock from './TeXBlock';
-import {content} from '../data/content';
-import {insertTeXBlock} from '../modifiers/insertTeXBlock';
-import {removeTeXBlock} from '../modifiers/removeTeXBlock';
+import { content } from '../data/content';
+import { insertTeXBlock } from '../modifiers/insertTeXBlock';
+import { removeTeXBlock } from '../modifiers/removeTeXBlock';
 
-var {Editor, EditorState, RichUtils} = Draft;
+let { Editor, EditorState, RichUtils } = Draft;
 
 export default class TeXEditorExample extends React.Component {
   constructor(props) {
@@ -35,17 +20,18 @@ export default class TeXEditorExample extends React.Component {
 
     this._blockRenderer = (block) => {
       if (block.getType() === 'atomic') {
+        console.log(block);
         return {
           component: TeXBlock,
           editable: false,
           props: {
             onStartEdit: (blockKey) => {
-              var {liveTeXEdits} = this.state;
-              this.setState({liveTeXEdits: liveTeXEdits.set(blockKey, true)});
+              let { liveTeXEdits } = this.state;
+              this.setState({ liveTeXEdits: liveTeXEdits.set(blockKey, true) });
             },
             onFinishEdit: (blockKey) => {
-              var {liveTeXEdits} = this.state;
-              this.setState({liveTeXEdits: liveTeXEdits.remove(blockKey)});
+              let { liveTeXEdits } = this.state;
+              this.setState({ liveTeXEdits: liveTeXEdits.remove(blockKey) });
             },
             onRemove: (blockKey) => this._removeTeX(blockKey),
           },
@@ -55,11 +41,11 @@ export default class TeXEditorExample extends React.Component {
     };
 
     this._focus = () => this.refs.editor.focus();
-    this._onChange = (editorState) => this.setState({editorState});
+    this._onChange = (editorState) => this.setState({ editorState });
 
     this._handleKeyCommand = command => {
-      var {editorState} = this.state;
-      var newState = RichUtils.handleKeyCommand(editorState, command);
+      let { editorState } = this.state;
+      let newState = RichUtils.handleKeyCommand(editorState, command);
       if (newState) {
         this._onChange(newState);
         return true;
@@ -68,7 +54,7 @@ export default class TeXEditorExample extends React.Component {
     };
 
     this._removeTeX = (blockKey) => {
-      var {editorState, liveTeXEdits} = this.state;
+      let { editorState, liveTeXEdits } = this.state;
       this.setState({
         liveTeXEdits: liveTeXEdits.remove(blockKey),
         editorState: removeTeXBlock(editorState, blockKey),
@@ -100,7 +86,7 @@ export default class TeXEditorExample extends React.Component {
               placeholder="Start a document..."
               readOnly={this.state.liveTeXEdits.count()}
               ref="editor"
-              spellCheck={true}
+              spellCheck
             />
           </div>
         </div>

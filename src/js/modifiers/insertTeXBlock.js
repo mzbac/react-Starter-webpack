@@ -38,7 +38,7 @@ const examples = [
 export function insertTeXBlock(editorState) {
   const nextFormula = count++ % examples.length;
   const entityKey = Entity.create(
-    'TOKEN',
+    'aaa',
     'IMMUTABLE',
     {content: examples[nextFormula]}
   );

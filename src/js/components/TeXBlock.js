@@ -64,6 +64,9 @@ export default class TeXBlock extends React.Component {
     this.state = {editMode: false};
 
     this._onClick = () => {
+     console.log(Entity
+      .get(this.props.block.getEntityAt(0))
+      .getData()['content']);
       if (this.state.editMode) {
         return;
       }

@@ -165,31 +165,7 @@ class KeyPathEditor extends Component {
     this.blockRendererFn = this.blockRendererFn.bind(this);
   }
 
-// shouldComponentUpdate(props, state) {
-//   debugger;
-//   if (this.suppress) return false;
-//   if (this.props.value !== props.value && props.value !== this.__raw) {
-//     this.__raw = props.value;
-//     this.setState({
-//       editorState: !props.value
-//         ? EditorState.createEmpty()
-//         : EditorState.push(this.state.editorState, convertFromRaw(props.value))
-//     });
-//     return false;
-//   }
-//   else if (this.state.active !== state.active
-//     || this.state.editorState !== state.editorState
-//     || this.state.readOnly !== state.readOnly
-//     || this.props.readOnly !== props.readOnly
-//     || this.props.fileDrag !== props.fileDrag
-//     || this.props.uploading !== props.uploading
-//     || this.props.percent !== props.percent
-//     || this.force) {
-//     this.force = false;
-//     return true;
-//   }
-//   return false;
-// }
+
   customBlockRendering(props) {
     const { blockTypes } = props;
     var newObj = {
