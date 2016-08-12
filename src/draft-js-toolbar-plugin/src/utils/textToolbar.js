@@ -8,7 +8,11 @@ import getSelectionRect from '../utils/getSelectionRect';
 export const shouldRenderToolbar = editorState => {
   const selected = getSelection();
   const selectionState = editorState ? editorState.getSelection() : null;
-  return !!selected.rangeCount && !selectionState.isCollapsed();
+  return !!selected.rangeCount && !selectionState.isCollapsed() && selectionState && (editorState
+      .getCurrentContent()
+      .getBlockForKey(selectionState.getStartKey()) === editorState
+      .getCurrentContent()
+      .getBlockForKey(selectionState.getEndKey()));
 };
 
 // Helper function, is toolbar necessary / is a text selected?
